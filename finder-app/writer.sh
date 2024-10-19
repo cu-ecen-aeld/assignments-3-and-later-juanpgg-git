@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Check if the correct number of arguments is provided
+# Check if the correct number of arguments is provided.
 if [ $# -ne 2 ]; then
   echo "Error: Two arguments required: <file path> <string to write>"
   exit 1
