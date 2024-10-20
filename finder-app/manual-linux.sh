@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script outline to install and build kernel.
-# Author: Juan Gomez
+# Author: Juan Gomez.
 
 set -e
 set -u
