@@ -1,20 +1,24 @@
-# Makefile for the writer application
+.DEFAULT_GOAL := all 
+.PHONY := all clean
 
-CC = cc  # Default compiler
-CROSS_COMPILE ?=  # Allow for cross-compilation
 
-# Set the target executable
-TARGET = writer
-# Set compilation flags
-CFLAGS = -Wall -Wextra
+ifeq ($(CROSS_COMPILE), aarch64-none-linux-gnu-)
+$(info Cross compiling active)
+CC = aarch64-none-linux-gnu-gcc
+else
+$(info  Cross compiling disable)
+CC = gcc
+endif
+APP_NAME = writer
+FILE_NAME = writer
 
-# Default target to build the writer application
-all: $(TARGET)
+all: $(FILE_NAME).o
+	$(CC) $^ -o $(APP_NAME)
 
-# Rule to compile the writer application
-$(TARGET): writer.c
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) -o $@ $<
+$(FILE_NAME).o:
+	$(CC) -c $(FILE_NAME).c -o $@
 
-# Clean target to remove compiled files
+
 clean:
-	rm -f $(TARGET) *.o
+	rm -f *.o
+	rm -f $(FILE_NAME)

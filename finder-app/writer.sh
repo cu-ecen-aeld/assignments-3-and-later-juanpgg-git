@@ -1,27 +1,26 @@
-#!/bin/bash
+#!/bin/sh
 
-# Check if the correct number of arguments is provided.
-if [ $# -ne 2 ]; then
-  echo "Error: Two arguments required: <file path> <string to write>"
-  exit 1
+inFile="$1"
+inStr="$2"
+retVal=1 # Not OK
+
+if [ "$inFile" = "" ] || [ "$inStr" = "" ];
+then
+  echo "Invalid Input Arguments, please use the command  $0 <inFile> <inStr>"
+else
+  mkdir -p $(dirname "$inFile")
+  if [ $? -ne 0 ]; # check the directory was created without problems
+  then
+    echo "Error while creating the new directory"
+  fi
+  echo "$inStr" > "$inFile"
+  if [ $? -ne 0 ]; # check the file was create/updated without problems
+  then 
+    echo "Error while creating the new file"
+  else
+    retVal=0 # everything is OK lets update the exit value
+  fi
 fi
 
-# Assign arguments to variables
-writefile=$1
-writestr=$2
-
-# Create the directory path if it doesn't exist
-mkdir -p "$(dirname "$writefile")"
-
-# Write the string to the file, overwriting if it exists
-echo "$writestr" > "$writefile"
-
-# Check if the write operation was successful
-if [ $? -ne 0 ]; then
-  echo "Error: Could not create or write to file $writefile"
-  exit 1
-fi
-
-# Exit with a success status
-exit 0
+exit $retVal
 

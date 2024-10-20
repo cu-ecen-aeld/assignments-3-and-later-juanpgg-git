@@ -1,29 +1,21 @@
-#!/bin/bash
+#!/bin/sh 
 
-# Check if the correct number of arguments is provided
-if [ $# -ne 2 ]; then
-  echo "Error: Two arguments required: <directory> <search string>"
-  exit 1
+filesdir="$1"
+searchstr="$2"
+retVal=1 # error value
+
+if [ "$filesdir" = "" ] || [ "$searchstr" = "" ]; 
+then
+ echo "Parameter missing please use the next sintax $0 <fileDir> <searchStr>"
+elif [ ! -d $filesdir ];
+then 
+ echo 'filesdir does not represent a directory on the filesystem'
+else 
+ quantityFiles=$(find $filesdir -type f | wc -l)
+ quantityMatchesLines=$(grep -r $searchstr $filesdir | wc -l)
+ echo "The number of files are $quantityFiles and the number of matching lines are $quantityMatchesLines"
+ retVal=0 # OK
 fi
 
-# Assign arguments to variables
-filesdir=$1
-searchstr=$2
 
-# Check if the first argument is a valid directory
-if [ ! -d "$filesdir" ]; then
-  echo "Error: $filesdir is not a directory"
-  exit 1
-fi
-
-# Find the number of files (recursively) in the directory
-num_files=$(find "$filesdir" -type f | wc -l)
-
-# Find the number of lines that match the search string
-num_matching_lines=$(grep -r "$searchstr" "$filesdir" 2>/dev/null | wc -l)
-
-# Print the result
-echo "The number of files are $num_files and the number of matching lines are $num_matching_lines"
-
-exit 0
-
+exit $retVal
