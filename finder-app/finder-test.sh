@@ -9,7 +9,7 @@ NUMFILES=10
 WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aesd-data
 username=$(cat /etc/finder-app/conf/username.txt)
-OUT_FILE=/tmp/assigment4-result.txt
+OUT_FILE=/tmp/assignment4-result.txt 
 
 if [ $# -lt 3 ]
 then
@@ -35,13 +35,11 @@ rm -rf "${WRITEDIR}"
 # create $WRITEDIR if not assignment1
 assignment=`cat /etc/finder-app/conf/assignment.txt`
 
-if [ $assignment != 'assignment1' ]
+if [ "$assignment" != 'assignment1' ]
 then
 	mkdir -p "$WRITEDIR"
 
-	#The WRITEDIR is in quotes because if the directory path consists of spaces, then variable substitution will consider it as multiple argument.
-	#The quotes signify that the entire string in WRITEDIR is a single string.
-	#This issue can also be resolved by using double square brackets i.e [[ ]] instead of using quotes.
+	# Check if WRITEDIR was created successfully
 	if [ -d "$WRITEDIR" ]
 	then
 		echo "$WRITEDIR created"
@@ -49,24 +47,25 @@ then
 		exit 1
 	fi
 fi
-#echo "Removing the old writer utility and compiling as a native application"
-#make clean
-#make
 
+# Write files using the writer utility
 for i in $( seq 1 $NUMFILES)
 do
 	writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
 done
 
+# Run the finder command
 OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
 
+# Output the results to the OUT_FILE
 echo "$OUTPUTSTRING" > "$OUT_FILE"
 
-# remove temporary directories
-rm -rf /tmp/aesd-data/"$WRITEDIR/${username}*.txt"
+# Remove temporary files
+rm -rf "$WRITEDIR/${username}*.txt"  # Clean up only the files created
 
+# Check for matching output and print success or failure
 set +e
-echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
+echo "$OUTPUTSTRING" | grep "${MATCHSTR}" > /dev/null
 if [ $? -eq 0 ]; then
 	echo "success"
 	exit 0
@@ -74,3 +73,4 @@ else
 	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
 	exit 1
 fi
+
